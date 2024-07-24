@@ -2,10 +2,14 @@ name: Build AutoAWQ Wheels with CUDA
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number for the release'
+        required: true
+        type: string
 
 jobs:
   release:
-    # Retrieve tag and create release
     name: Create Release
     runs-on: ubuntu-latest
     outputs:
@@ -14,10 +18,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Extract branch info
-        shell: bash
+      - name: Set Release Tag
+        shell: pwsh
         run: |
-          echo "release_tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          # Remove 'v' from version number if present
+          $version = '${{ github.event.inputs.version }}'
+          $release_tag = $version.TrimStart('v')
+          echo "release_tag=$release_tag" >> $env:GITHUB_ENV
 
       - name: Create Release
         id: create_release
