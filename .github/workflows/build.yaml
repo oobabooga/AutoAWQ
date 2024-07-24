@@ -1,9 +1,7 @@
 name: Build AutoAWQ Wheels with CUDA
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 jobs:
   release:
